@@ -13,9 +13,13 @@ app.use(compression());
 app.use(express.json());
 app.use(cors());
 app.use(session({
-  resave: false,
+  resave: true,
+  rolling: true,
   saveUninitialized: true,
   secret: process.env.secret,
+  cookie: {
+    maxAge: 34560000000,
+  },
 }));
 app.use((req, res, next) => {
   console.log(req.method, req.url);
