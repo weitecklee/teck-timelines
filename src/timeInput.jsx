@@ -39,7 +39,6 @@ function TimeInput({
     Papa.parse(fileObj, {
       header: true,
       complete: (res) => {
-        console.log(res.data);
         const newTimeData = [...timeData];
         const newLabels = [...labels];
         const newEvents = [];
@@ -101,7 +100,40 @@ function TimeInput({
         <Button
           variant="contained"
           onClick={() => {
-            if (event.length && endDate - startDate >= 0) {
+            if (event === 'AnimalCrossingDemo') {
+              setHelper(false);
+              setHelper2(false);
+              setUpload(false);
+              Papa.parse('https://raw.githubusercontent.com/weitecklee/teck-timelines/master/demo/AnimalCrossing%20-%20Gantt.csv', {
+                download: true,
+                header: true,
+                complete: (res) => {
+                  const newTimeData = [...timeData];
+                  const newLabels = [...labels];
+                  const newEvents = [];
+                  res.data.forEach((a) => {
+                    const newData = {
+                      event: a.event,
+                      startDate: new Date(a.startDate),
+                      endDate: new Date(a.endDate),
+                      backgroundColor: randomColor(),
+                    };
+                    newTimeData.push(newData);
+                    newLabels.push(a.event);
+                    newEvents.push(newData);
+                  });
+                  axios.post('/addEvents', newEvents)
+                    .then((resp) => {
+                      console.log(resp);
+                      setLabels(newLabels);
+                      setTimeData(newTimeData);
+                    })
+                    .catch((err) => {
+                      console.log(err);
+                    });
+                },
+              });
+            } else if (event.length && endDate - startDate >= 0) {
               setHelper(false);
               setHelper2(false);
               const newData = {
