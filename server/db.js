@@ -76,3 +76,14 @@ exports.deleteEvent = (req, res) => {
       res.status(500).send(err);
     });
 };
+
+exports.clearEvents = (req, res) => {
+  Timeline.deleteMany({ sessionID: req.sessionID })
+    .then(() => {
+      res.sendStatus(200);
+    })
+    .catch((err) => {
+      console.log(err);
+      res.status(500).send(err);
+    });
+};

@@ -17,7 +17,7 @@ const randomColor = () => (`hsl(${Math.floor(Math.random() * 360)}, ${Math.floor
 let order = true;
 
 function TimeInput({
-  timeData, setTimeData, labels, setLabels,
+  timeData, setTimeData, labels, setLabels, setReset
 }) {
   const [event, setEvent] = useState('');
   const [startDate, setStartDate] = useState(today);
@@ -104,35 +104,13 @@ function TimeInput({
               setHelper(false);
               setHelper2(false);
               setUpload(false);
-              Papa.parse('https://raw.githubusercontent.com/weitecklee/teck-timelines/master/demo/AnimalCrossing%20-%20Gantt.csv', {
-                download: true,
-                header: true,
-                complete: (res) => {
-                  const newTimeData = [...timeData];
-                  const newLabels = [...labels];
-                  const newEvents = [];
-                  res.data.forEach((a) => {
-                    const newData = {
-                      event: a.event,
-                      startDate: new Date(a.startDate),
-                      endDate: new Date(a.endDate),
-                      backgroundColor: randomColor(),
-                    };
-                    newTimeData.push(newData);
-                    newLabels.push(a.event);
-                    newEvents.push(newData);
-                  });
-                  axios.post('/addEvents', newEvents)
-                    .then((resp) => {
-                      console.log(resp);
-                      setLabels(newLabels);
-                      setTimeData(newTimeData);
-                    })
-                    .catch((err) => {
-                      console.log(err);
-                    });
-                },
-              });
+              axios.post('/demo')
+                .then(() => {
+                  setReset(new Date());
+                })
+                .catch((err) => {
+                  console.log(err);
+                });
             } else if (event.length && endDate - startDate >= 0) {
               setHelper(false);
               setHelper2(false);
@@ -272,6 +250,23 @@ function TimeInput({
             CSV should have headers &quot;event, startDate, endDate&quot;
           </Alert>
         ) : null}
+      </span>
+      <span>
+        <Button
+          variant="outlined"
+          onClick={() => {
+            axios.delete('/clearEvents')
+              .then(() => {
+                setTimeData([]);
+                setLabels([]);
+              })
+              .catch((err) => {
+                console.log(err);
+              });
+          }}
+        >
+          Clear
+        </Button>
       </span>
       <input
         style={{ display: 'none' }}

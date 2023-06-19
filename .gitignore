@@ -37,3 +37,5 @@ bower_components/
 .floobit
 .floo
 .flooignore
+
+.vscode

@@ -8,6 +8,7 @@ import TimelineChart from './timelineChart';
 function App() {
   const [timeData, setTimeData] = useState([]);
   const [labels, setLabels] = useState([]);
+  const [reset, setReset] = useState(new Date());
 
   useEffect(() => {
     axios.get('/getEvents')
@@ -30,7 +31,7 @@ function App() {
       .catch((err) => {
         console.log(err);
       });
-  }, []);
+  }, [reset]);
 
   return (
     <LocalizationProvider dateAdapter={AdapterDateFns}>
@@ -39,6 +40,7 @@ function App() {
         setTimeData={setTimeData}
         labels={labels}
         setLabels={setLabels}
+        setReset={setReset}
       />
       <TimelineChart
         timeData={timeData}
